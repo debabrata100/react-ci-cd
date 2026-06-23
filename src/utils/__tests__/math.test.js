@@ -14,6 +14,6 @@ describe("divide tests goes here", () => {
   });
   it("should throw error when diving by zero", () => {
     const divideByZero = () => divide(10, 0);
-    expect(divideByZero).toThrowError("Cannot divide by zero");
+    expect(divideByZero).toThrowError("Cannot divide by zeros");
   });
 });
