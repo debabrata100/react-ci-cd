@@ -47,7 +47,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker Image
-        run: docker build -t debabrata100/react-ci-demo:latest .
-
-      - name: Push Docker Image
-        run: docker push debabrata100/react-ci-demo:latest
+        run: |
+          docker build \
+            -t debabrata100/react-ci-demo:latest \
+            -t debabrata100/react-ci-demo:${GITHUB_SHA::7} .
+      - name: Push Docker Images
+        run: docker push debabrata100/react-ci-demo:${GITHUB_SHA::7}
