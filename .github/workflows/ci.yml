@@ -52,4 +52,6 @@ jobs:
             -t debabrata100/react-ci-demo:latest \
             -t debabrata100/react-ci-demo:${GITHUB_SHA::7} .
       - name: Push Docker Images
-        run: docker push debabrata100/react-ci-demo:${GITHUB_SHA::7}
+        run: |
+          docker push debabrata100/react-ci-demo:latest
+          docker push debabrata100/react-ci-demo:${GITHUB_SHA::7}
