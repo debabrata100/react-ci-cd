@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-
+      - name: Print Git SHA
+        run: echo $GITHUB_SHA
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
