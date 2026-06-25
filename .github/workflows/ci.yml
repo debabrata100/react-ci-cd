@@ -88,3 +88,16 @@ jobs:
       - name: Trigger Staging Deployment
         run: |
           curl -X POST "${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}"
+  deploy-production:
+    needs: docker
+
+    if: github.ref == 'refs/heads/master'
+
+    runs-on: ubuntu-latest
+
+    environment: production
+
+    steps:
+      - name: Trigger Production Deployment
+        run: |
+          curl -X POST "${{ secrets.RENDER_PRODUCTION_DEPLOY_HOOK }}"
