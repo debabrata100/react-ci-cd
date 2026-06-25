@@ -94,7 +94,7 @@ jobs:
   deploy-production:
     needs: docker
 
-    if: github.ref == 'refs/heads/master'
+    if: github.event_name == 'release'
 
     runs-on: ubuntu-latest
 
