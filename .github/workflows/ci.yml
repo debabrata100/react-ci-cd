@@ -75,4 +75,16 @@ jobs:
 
           cache-from: type=gha
           cache-to: type=gha,mode=max
- 
+  deploy-staging:
+    needs: docker
+
+    if: github.ref == 'refs/heads/develop'
+
+    runs-on: ubuntu-latest
+
+    environment: staging
+
+    steps:
+      - name: Trigger Staging Deployment
+        run: |
+          curl -X POST "${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}"

@@ -18,7 +18,7 @@ function Game() {
   };
   return (
     <div className="game">
-      <h1>Box Game</h1>
+      <h1>Box Game: S</h1>
       <div className="game-content">
         <div className="boxes">{boxes}</div>
         <div className="game-info">
