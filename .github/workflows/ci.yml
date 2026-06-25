@@ -93,6 +93,16 @@ jobs:
       - name: Trigger Staging Deployment
         run: |
           curl -X POST "${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}"
+      - name: Deployment Summary
+        run: |
+          echo "# 🚀 Staging Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Staging |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered By | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
   deploy-production:
     if: github.event_name == 'release'
 
