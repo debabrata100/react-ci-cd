@@ -103,7 +103,48 @@ jobs:
           echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Triggered By | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+
+  promote-image:
+    if: github.event_name == 'release'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Pull Image by Git SHA
+        run: |
+          docker pull debabrata100/react-ci-demo:${{ github.sha }} || {
+            echo "❌ Docker image for commit ${{ github.sha }} was not found."
+            exit 1
+          }
+
+      - name: Tag Release Image
+        run: |
+          docker tag \
+            debabrata100/react-ci-demo:${{ github.sha }} \
+            debabrata100/react-ci-demo:${{ github.event.release.tag_name }}
+
+      - name: Push Release Image
+        run: |
+          docker push debabrata100/react-ci-demo:${{ github.event.release.tag_name }}
+
+      - name: Promotion Summary
+        run: |
+          echo "# 🏷 Docker Image Promotion" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Source Tag | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Tag | ${{ github.event.release.tag_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Repository | debabrata100/react-ci-demo |" >> $GITHUB_STEP_SUMMARY
+
   deploy-production:
+    needs: promote-image
     if: github.event_name == 'release'
 
     runs-on: ubuntu-latest
@@ -114,3 +155,14 @@ jobs:
       - name: Trigger Production Deployment
         run: |
           curl -X POST "${{ secrets.RENDER_PRODUCTION_DEPLOY_HOOK }}"
+      - name: Production Deployment Summary
+        run: |
+          echo "# 🚀 Production Release" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Production |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Tag | ${{ github.event.release.tag_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered By | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Repository | ${{ github.repository }} |" >> $GITHUB_STEP_SUMMARY
