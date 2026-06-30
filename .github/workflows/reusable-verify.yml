@@ -2,10 +2,14 @@ name: Reusable Verify
 
 on:
   workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: number
 
 jobs:
   verify:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "Reusable workflow works!"
+      - run: echo "Node Version = ${{ inputs.node-version }}"
