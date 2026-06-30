@@ -1,0 +1,11 @@
+name: Reusable Verify
+
+on:
+  workflow_call:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "Reusable workflow works!"
