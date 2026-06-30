@@ -12,49 +12,42 @@ on:
 jobs:
   verify:
     if: github.event_name != 'release'
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [20, 22, 24]
 
-    uses: ./.github/workflows/reusable-verify.yml
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Print Git SHA
+        run: echo $GITHUB_SHA
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
 
-    with:
-      node-version: ${{matrix.node-version}}
-    
-    # runs-on: ubuntu-latest
-    
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run npm audit
+        run: |
+          echo "🔍 Checking npm dependencies for vulnerabilities..."
+          npm audit --audit-level=high
 
-    # steps:
-    #   - name: Checkout Source
-    #     uses: actions/checkout@v4
-    #   - name: Print Git SHA
-    #     run: echo $GITHUB_SHA
-    #   - name: Setup Node
-    #     uses: actions/setup-node@v4
-    #     with:
-    #       node-version: ${{ matrix.node-version }}
-    #       cache: npm
+      - name: Run Lint
+        run: npm run lint
 
-    #   - name: Install Dependencies
-    #     run: npm ci
-    #   - name: Run npm audit
-    #     run: |
-    #       echo "🔍 Checking npm dependencies for vulnerabilities..."
-    #       npm audit --audit-level=high
+      - name: Run Tests
+        run: npm run test
 
-    #   - name: Run Lint
-    #     run: npm run lint
-
-    #   - name: Run Tests
-    #     run: npm run test
-
-    #   - name: Build Application
-    #     run: npm run build
-    #   - name: Upload Build Artifact
-    #     uses: actions/upload-artifact@v4
-    #     with:
-    #       name: react-dist
-    #       path: dist
+      - name: Build Application
+        run: npm run build
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-dist
+          path: dist
 
   docker:
     if: github.event_name != 'release'
