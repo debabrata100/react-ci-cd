@@ -12,15 +12,17 @@ on:
 jobs:
   verify:
     if: github.event_name != 'release'
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
+
     uses: ./.github/workflows/reusable-verify.yml
 
     with:
-      node-version: 22
+      node-version: ${{matrix.node-version}}
     
     # runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     node-version: [20, 22, 24]
+    
 
     # steps:
     #   - name: Checkout Source
