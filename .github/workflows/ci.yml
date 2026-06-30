@@ -132,6 +132,13 @@ jobs:
       - name: Push Release Image
         run: |
           docker push debabrata100/react-ci-demo:${{ github.event.release.tag_name }}
+      - name: Verify Release Image
+        run: |
+          docker pull debabrata100/react-ci-demo:${{ github.event.release.tag_name }}
+
+          docker inspect \
+            debabrata100/react-ci-demo:${{ github.event.release.tag_name }} \
+            --format='Digest: {{index .RepoDigests 0}}'
 
       - name: Promotion Summary
         run: |
@@ -141,7 +148,6 @@ jobs:
           echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Source Tag | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Release Tag | ${{ github.event.release.tag_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Repository | debabrata100/react-ci-demo |" >> $GITHUB_STEP_SUMMARY
 
   deploy-production:
     needs: promote-image
