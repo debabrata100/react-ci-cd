@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Print Git SHA
         run: echo $GITHUB_SHA
       - name: Setup Node
@@ -47,14 +49,10 @@ jobs:
           path: coverage
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}  # Add if not already set
-        with:
-          args: -Dsonar.projectKey=react-ci-cd -Dsonar.exclusions=node_modules/**
-
-
+          
       - name: Build Application
         run: npm run build
       - name: Upload Build Artifact
