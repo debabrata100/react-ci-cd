@@ -50,11 +50,14 @@ jobs:
           path: coverage
 
       - name: SonarQube Scan
-        if: matrix.node-version == 22
+        if: matrix.node-version == 22 && github.ref == 'refs/heads/master'
         uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
       - name: Build Application
         run: npm run build
       - name: Upload Build Artifact
