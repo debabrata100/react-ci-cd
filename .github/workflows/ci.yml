@@ -43,7 +43,7 @@ jobs:
       - name: Run Tests with Coverage
         run: npm run test:coverage
       - name: Upload Coverage Report
-        if: matrix.node-version == 22
+        if: matrix.node-version == 22 && github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
