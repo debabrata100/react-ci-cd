@@ -50,7 +50,7 @@ jobs:
           path: coverage
 
       - name: SonarQube Scan
-        if: matrix.node-version == 22
+        if: matrix.node-version == 22 && github.ref == 'refs/heads/master'
         uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
