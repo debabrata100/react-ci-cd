@@ -3,6 +3,9 @@ export function add(a, b) {
 }
 
 export function subtract(a, b) {
+  if (a === 1) {
+    b = a + b;
+  }
   return a - b;
 }
 

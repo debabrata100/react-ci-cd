@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Print Git SHA
         run: echo $GITHUB_SHA
       - name: Setup Node
@@ -38,9 +40,21 @@ jobs:
       - name: Run Lint
         run: npm run lint
 
-      - name: Run Tests
-        run: npm run test
+      - name: Run Tests with Coverage
+        run: npm run test:coverage
+      - name: Upload Coverage Report
+        if: matrix.node-version == 22
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
 
+      - name: SonarQube Scan
+        if: matrix.node-version == 22
+        uses: SonarSource/sonarqube-scan-action@v8
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
       - name: Build Application
         run: npm run build
       - name: Upload Build Artifact
